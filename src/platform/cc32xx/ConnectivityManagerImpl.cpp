@@ -65,7 +65,7 @@ using namespace ::chip::System;
 using namespace ::chip::TLV;
 
 extern "C" void cc32xxLog(const char * aFormat, ...);
-static struct netif * m_pNetIf = NULL;
+// static struct netif * m_pNetIf = NULL; // BOSCH: will produce unused variable warning - error because the part below is commented out
 
 namespace chip {
 namespace DeviceLayer {
@@ -140,26 +140,27 @@ CHIP_ERROR ConnectivityManagerImpl::_GetAndLogWifiStatsCounters(void)
 
 CHIP_ERROR ConnectivityManagerImpl::_Init()
 {
-    int rc;
-    cc32xxLog("Start LWIP");
-    rc = LWIP_IF_init(_OnLwipEvent, false);
-    if (rc == 0)
-    {
-        m_pNetIf = LWIP_IF_addInterface();
-    }
-    if (m_pNetIf == NULL)
-    {
-        cc32xxLog("LWIP IF not started, error = %d", rc);
-    }
-    else
-    {
-        cc32xxLog("Start Wi-Fi");
-        /* Try to connect to AP and go through provisioning (if needed) */
-        rc = SlNetConn_start(SLNETCONN_SERVICE_LVL_MAC, SlNetConnEventHandler, SLNETCONN_TIMEOUT, 0);
-        assert(rc == 0);
+    // BOSCH: our project already initializes lwip, so dont do it here or it will crash
+    // int rc;
+    // cc32xxLog("Start LWIP");
+    // rc = LWIP_IF_init(_OnLwipEvent, false);
+    // if (rc == 0)
+    // {
+    //     m_pNetIf = LWIP_IF_addInterface();
+    // }
+    // if (m_pNetIf == NULL)
+    // {
+    //     cc32xxLog("LWIP IF not started, error = %d", rc);
+    // }
+    // else
+    // {
+    //     cc32xxLog("Start Wi-Fi");
+    //     /* Try to connect to AP and go through provisioning (if needed) */
+    //     rc = SlNetConn_start(SLNETCONN_SERVICE_LVL_MAC, SlNetConnEventHandler, SLNETCONN_TIMEOUT, 0);
+    //     assert(rc == 0);
 
-        LWIP_IF_setLinkUp(m_pNetIf);
-    }
+    //     LWIP_IF_setLinkUp(m_pNetIf);
+    // }
     return CHIP_NO_ERROR;
 }
 

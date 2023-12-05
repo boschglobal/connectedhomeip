@@ -182,7 +182,7 @@ template("ti_simplelink_sdk") {
     include_dirs += [
       "${ti_simplelink_sdk_root}/source",
       "${ti_simplelink_sdk_root}/source/third_party/CMSIS/Include",
-      "${chip_root}/third_party/mbedtls/repo/include",
+      # "${chip_root}/third_party/mbedtls/repo/include", #BOSCH: remove this as this will pull in the wrong includes, we need to use the includes from our project
     ]
     defines = []
 
