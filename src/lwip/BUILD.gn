@@ -177,10 +177,15 @@ if (current_os == "zephyr" || current_os == "mbed") {
   }
 } else {
   config("lwip_config") {
-    include_dirs = [ lwip_platform ]
+    if ( lwip_include_dirs != "" ) {
+      include_dirs = lwip_include_dirs
+    }
+    else {
+      include_dirs = [ lwip_platform ] # <-- BOSCH, this include will include the "wrong" lwipopts.h, so by introducing the "lwip_include_dirs"  we can set the correct include path for our platform
 
-    if (lwip_platform != "standalone" && lwip_platform != "mbed") {
-      include_dirs += [ "freertos" ]
+      if (lwip_platform != "standalone" && lwip_platform != "mbed") {
+        include_dirs += [ "freertos" ]
+      }
     }
   }
 

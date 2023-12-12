@@ -18,4 +18,5 @@ declare_args() {
 
   # lwIP platform: standalone, freertos.
   lwip_platform = ""
+  lwip_include_dirs = ""
 }
