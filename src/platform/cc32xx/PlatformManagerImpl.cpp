@@ -71,7 +71,7 @@ CHIP_ERROR PlatformManagerImpl::_InitChipStack(void)
     SuccessOrExit(err);
 
     // Initialize LwIP.
-    // tcpip_init(NULL, NULL); // BOSCH: our porject already initializes lwip, so dont do it here or it will crash
+    tcpip_init(NULL, NULL);
 
     app_random_init();
     err = chip::Crypto::add_entropy_source(app_entropy_source, NULL, 16);
