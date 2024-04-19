@@ -410,7 +410,7 @@ MatterThermostatClusterServerPreAttributeChangedCallback(const app::ConcreteAttr
         }
         auto RequestedSystemMode = static_cast<ThermostatSystemMode>(*value);
         if (ControlSequenceOfOperation > ThermostatControlSequence::kCoolingAndHeatingWithReheat ||
-            RequestedSystemMode > ThermostatSystemMode::kSleep)
+            RequestedSystemMode > ThermostatSystemMode::kDry)
         {
             return imcode::InvalidValue;
         }
