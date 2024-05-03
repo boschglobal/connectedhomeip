@@ -532,17 +532,24 @@ CHIP_ERROR CC32XXConfig::ReadKVSFromNV()
     uint16_t bufferLength;
 
     uint8_t * list = new uint8_t[NV_BUFFER_SIZE];
+    if (list == nullptr)
+    {
+        cc32xxLog("could not allocate memory for Linked List");
+        return CHIP_ERROR_PERSISTED_STORAGE_FAILED;
+    }
     rc             = FILE_read((int8_t *) listName, NV_BUFFER_SIZE, list, KVS_TOKEN);
     if (rc > 0)
     {
         bufferLength = rc;
         pList->CreateLinkedListFromNV(list, bufferLength);
         cc32xxLog("read in KVS Linked List from NV");
+        delete [] list;
         return CHIP_NO_ERROR;
     }
     else
     {
-        cc32xxLog("could not read in Linked List from NV, error %d", rc);
+        cc32xxLog("could not read in Linked List from NV, error %d (or != KVS size %d)", rc, NV_BUFFER_SIZE);
+        delete [] list;
         return CHIP_ERROR_PERSISTED_STORAGE_FAILED;
     }
 }
