@@ -28,6 +28,7 @@
 #include <platform/PlatformManager.h>
 #include <platform/cc32xx/DiagnosticDataProviderImpl.h>
 #include <platform/internal/GenericPlatformManagerImpl_FreeRTOS.ipp>
+#include <ti/drivers/net/wifi/netutil.h>
 
 #include <lwip/tcpip.h>
 
@@ -36,15 +37,9 @@ namespace DeviceLayer {
 
 PlatformManagerImpl PlatformManagerImpl::sInstance;
 
-static int app_get_random(uint8_t * aOutput, size_t aLen)
+static int app_get_random(uint8_t * aOutput, uint16_t aLen)
 {
-    size_t i;
-
-    // TBD add implementation
-    for (i = 0; i < aLen; i++)
-    {
-        aOutput[i] = i * 31 + 17;
-    }
+    auto     sl_err      = sl_NetUtilGet(SL_NETUTIL_TRUE_RANDOM, 0, aOutput, &aLen);
     return 0;
 }
 
