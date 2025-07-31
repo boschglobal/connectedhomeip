@@ -48,9 +48,9 @@ config("ti_simplelink_mbedtls_config") {
       "${ti_simplelink_sdk_root}/source",
     ]
   } else if (ti_simplelink_device_family == "cc32xx") {
-    defines = [ "MBEDTLS_CONFIG_FILE=\"cc32xx-mbedtls-config.h\"" ]
+    defines = [ "MBEDTLS_CONFIG_FILE=\"${mbedtls_repo}/../platforms/cc32xx/cc32xx_mbedtls_config.h\"" ] # BOSCH, use project specific config file
 
-    include_dirs = [ "${chip_root}/src/platform/cc32xx" ]
+    include_dirs = [ "${chip_root}/src/platform/cc32xx", "${mbedtls_repo}/ti/port" ] # BOSCH: include project include directories
   }
 }
 
