@@ -200,6 +200,7 @@ if (current_os == "zephyr") {
       if (lwip_platform != "standalone" && lwip_platform != "mbed") {
         include_dirs += [ "freertos" ]
       }
+    }
   }
 
   lwip_target("legacy_lwip") {
