@@ -349,8 +349,16 @@ template("ti_sysconfig") {
         "-O3",  # Override -Os: prevents underflow bug in localProgramStart ramfunc copy
       ]
       include_dirs = [
-        "${ti_simplelink_sdk_root}/source/ti/posix/gcc",  # TI POSIX headers for ti_freertos_config.c
+        # TI POSIX headers for ti_freertos_config.c. Use the ticlang porting
+        # layer under TI Arm Clang; the gcc layer uses newlib-relative includes
+        # that do not resolve under tiarmclang.
       ]
+      if (is_clang) {
+        include_dirs +=
+            [ "${ti_simplelink_sdk_root}/source/ti/posix/ticlang" ]
+      } else {
+        include_dirs += [ "${ti_simplelink_sdk_root}/source/ti/posix/gcc" ]
+      }
     }
   }
 }
@@ -673,7 +681,15 @@ template("ti_simplelink_sdk") {
   }
 
   config("${sdk_target_name}_posix_config") {
-    include_dirs = [ "${ti_simplelink_sdk_root}/source/ti/posix/gcc" ]
+    # Use the TI Arm Clang POSIX porting layer when building with tiarmclang;
+    # the gcc layer's headers use newlib-relative includes (e.g.
+    # <../include/time.h>) that do not resolve under TI Arm Clang.
+    if (is_clang) {
+      include_dirs =
+          [ "${ti_simplelink_sdk_root}/source/ti/posix/ticlang" ]
+    } else {
+      include_dirs = [ "${ti_simplelink_sdk_root}/source/ti/posix/gcc" ]
+    }
     cflags_c = [ "-std=c11" ]
     cflags_cc = [ "-std=c++17" ]
     cflags = [
