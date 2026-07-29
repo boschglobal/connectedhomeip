@@ -44,13 +44,17 @@
 
 /* The SDK's prebuilt mbedtls.a (platform_util.obj) references gmtime() when
  * compiled with MBEDTLS_HAVE_TIME_DATE. newlib-nano for bare-metal does not
- * provide gmtime, so supply a stub that returns a zeroed-out struct tm. */
+ * provide gmtime, so supply a stub that returns a zeroed-out struct tm.
+ * TI Arm Clang's C library provides gmtime, so the stub is only needed for
+ * the newlib (arm-none-eabi-gcc) build. */
+#if !defined(__clang__)
 struct tm * gmtime(const time_t * timer)
 {
     (void) timer;
     static struct tm s_tm = { 0 };
     return &s_tm;
 }
+#endif
 
 #ifdef MBEDTLS_THREADING_ALT
 
