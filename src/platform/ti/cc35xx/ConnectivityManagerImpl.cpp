@@ -521,8 +521,10 @@ int32_t initAppVariables(void)
 
 CHIP_ERROR ConnectivityManagerImpl::_Init()
 {
+#define BACON_HW_CC35XX
+#ifndef BACON_HW_CC35XX
     int32_t ret = 0;
-
+#endif
     HWREG(ICACHE_BASE + 0x84) |= 0x00000001;
     HWREG(ICACHE_BASE + 0x4) |= 0xc0000000;
 
@@ -530,14 +532,16 @@ CHIP_ERROR ConnectivityManagerImpl::_Init()
 
     // Initialize LWIP
     initAppVariables();
+#ifndef BACON_HW_CC35XX
     network_stack_init();
+#endif
 
     Report("\n\r\n\r");
     Report("**** CC35XX Wi-Fi Init ****\n\r");
 
     Report("Disabling Power Management (DISABLE_SLEEP)\n\r");
     Power_setConstraint(PowerWFF3_DISALLOW_SLEEP);
-
+#ifndef BACON_HW_CC35XX
     Report("\n\r** Wlan_Start(<StackHandler>)\n\r");
     ret = Wlan_Start(WlanStackEventHandler);
     if (ret == 0)
@@ -703,6 +707,9 @@ CHIP_ERROR ConnectivityManagerImpl::_Init()
     }
 
     Report("\n\rReceived IP address successfully!\n\r");
+#else
+    Report("\n\r[INFO]_Init: BACON_BUILD - Skipping Wi-Fi initialization\n\r");
+#endif
     return CHIP_NO_ERROR;
 }
 
