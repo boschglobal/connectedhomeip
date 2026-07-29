@@ -310,8 +310,13 @@ CHIP_ERROR Spake2p::Init(const uint8_t * context, size_t context_len)
 
 CHIP_ERROR Spake2p::WriteMN()
 {
-    ReturnErrorOnFailure(InternalHash(spake2p_M_p256, sizeof(spake2p_M_p256)));
-    ReturnErrorOnFailure(InternalHash(spake2p_N_p256, sizeof(spake2p_N_p256)));
+    // HSM-DMA kann nicht aus Flash/unaligned hashen -> über RAM bouncen.
+    alignas(uint32_t) uint8_t m[sizeof(spake2p_M_p256)];
+    alignas(uint32_t) uint8_t n[sizeof(spake2p_N_p256)];
+    memcpy(m, spake2p_M_p256, sizeof(m));
+    memcpy(n, spake2p_N_p256, sizeof(n));
+    ReturnErrorOnFailure(InternalHash(m, sizeof(m)));
+    ReturnErrorOnFailure(InternalHash(n, sizeof(n)));
 
     return CHIP_NO_ERROR;
 }
