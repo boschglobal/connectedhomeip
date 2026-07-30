@@ -252,6 +252,13 @@ CHIP_ERROR CC35XXConfig::ReadKVS(const char * key, void * value, size_t value_si
 
     len = sNvoctpFps.getItemLen(val_item);
 
+    // A key item can exist while its value item is absent (len == 0). WriteKVS()
+    // deletes the value item whenever a zero-length value is stored, so an empty
+    // value is indistinguishable from a missing one. Report it as not-found here
+    // instead of returning success with 0 bytes; otherwise callers that require a
+    // fixed-size value (e.g. PersistedCounter) fail with CHIP_ERROR_INCORRECT_STATE.
+    VerifyOrExit(len != 0, err = CHIP_DEVICE_ERROR_CONFIG_NOT_FOUND);
+
     if (value_size >= (len - offset_bytes))
     {
         // reading to end of element
