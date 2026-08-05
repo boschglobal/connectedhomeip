@@ -195,7 +195,7 @@ if (current_os == "zephyr") {
   import("${lwip_root}/lwip.gni")
 
   config("lwip_config") {
-    if ( lwip_include_dirs != "" ) {
+    if (lwip_include_dirs != []) {
       include_dirs = lwip_include_dirs
     }
     else {
